@@ -37,7 +37,7 @@ app.put("/api/accounts/:accountId", (req, res) => {
     for (const key in req.body) {
       findId[key] = req.body[key];
     }
-    return res.status(204).json(accounts);
+    return res.status(201).json(accounts);
   } else {
     return res.status(404).json({ message: "Account not found" });
   }
