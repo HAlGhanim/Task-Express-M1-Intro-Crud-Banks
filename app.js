@@ -10,14 +10,14 @@ app.get("/api/accounts", (req, res) => {
   return res.status(200).json(accounts);
 });
 
-app.get("/api/accounts/:accountId", (req, res) => {
-  const { accountId } = req.params;
-  if (!accounts.find((account) => account.id === +accountId)) {
-    return res.status(404).json({ message: "Account not found" });
-  } else {
+app.get("/api/accounts/:name", (req, res) => {
+  const { name } = req.params;
+  if (accounts.find((account) => account.username === name)) {
     return res
       .status(200)
-      .json(accounts.find((account) => account.id === +accountId));
+      .json(accounts.find((account) => account.username === name));
+  } else {
+    return res.status(404).json({ message: "Account not found" });
   }
 });
 
@@ -44,10 +44,9 @@ app.delete("/api/accounts/:accountId", (req, res) => {
 app.put("/api/accounts/:accountId", (req, res) => {
   const { accountId } = req.params;
   const findId = accounts.find((account) => account.id === +accountId);
+  const accountIndex = accounts.indexOf(findId);
   if (findId) {
-    for (const key in req.body) {
-      findId[key] = req.body[key];
-    }
+    accounts[accountIndex] = { id: findId.id, ...req.body };
     console.log(accounts);
     return res.status(201).json(accounts);
   } else {
