@@ -5,12 +5,12 @@ const PORT = 8000;
 
 app.use(express.json());
 
-app.get("/api/accounts", (req, res) => {
+app.get("/accounts", (req, res) => {
   console.log(accounts);
   return res.status(200).json(accounts);
 });
 
-app.get("/api/accounts/:name", (req, res) => {
+app.get("/accounts/:name", (req, res) => {
   const { name } = req.params;
   if (accounts.find((account) => account.username === name)) {
     return res
@@ -21,15 +21,15 @@ app.get("/api/accounts/:name", (req, res) => {
   }
 });
 
-app.post("/api/accounts", (req, res) => {
+app.post("/accounts", (req, res) => {
   const id = accounts[accounts.length - 1].id + 1;
-  console.log(req.body);
   const newAccount = { id, ...req.body, funds: 0 };
   accounts.push(newAccount);
+  console.log(accounts[accounts.length - 1]);
   return res.status(201).json(accounts);
 });
 
-app.delete("/api/accounts/:accountId", (req, res) => {
+app.delete("/accounts/:accountId", (req, res) => {
   const { accountId } = req.params;
   console.log(accounts);
   if (accounts.find((account) => account.id === +accountId)) {
@@ -41,17 +41,18 @@ app.delete("/api/accounts/:accountId", (req, res) => {
   }
 });
 
-app.put("/api/accounts/:accountId", (req, res) => {
+app.put("/accounts/:accountId", (req, res) => {
   const { accountId } = req.params;
   const findId = accounts.find((account) => account.id === +accountId);
-  const accountIndex = accounts.indexOf(findId);
-  if (findId) {
-    accounts[accountIndex] = { id: findId.id, ...req.body };
-    console.log(accounts);
-    return res.status(201).json(accounts);
-  } else {
-    return res.status(404).json({ message: "Account not found" });
+  if (!findId) {
+    return res.status(404).json({
+      msg: "Not found!",
+    });
   }
+  for (const key in findId) {
+    if (key !== "id") findId[key] = req.body[key] ? req.body[key] : findId[key];
+  }
+  return res.status(200).json(findId);
 });
 
 app.listen(PORT, () => {
