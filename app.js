@@ -52,7 +52,7 @@ app.put("/accounts/:accountId", (req, res) => {
   for (const key in findId) {
     if (key !== "id") findId[key] = req.body[key] ? req.body[key] : findId[key];
   }
-  return res.status(200).json(findId);
+  return res.status(201).json(findId);
 });
 
 app.listen(PORT, () => {
