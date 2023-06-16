@@ -1,24 +1,22 @@
 let accounts = require("../../accounts");
 
-const getAllAccounts = (req, res) => {
+exports.getAllAccounts = (req, res) => {
   console.log(accounts);
   return res.status(200).json(accounts);
 };
 
-const getAccountByName = (req, res) => {
+exports.getAccountByName = (req, res) => {
   const { name } = req.params;
   const { currency } = req.query; // Dinar to USD conversion: 1 KD = 3.25569 USD
   const findName = accounts.find((account) => account.username === name);
   if (findName) {
     if (currency?.toLowerCase() === "usd") {
       const dollars = findName.funds * 3.25569;
-      return res
-        .status(200)
-        .json({
-          ...findName,
-          funds: dollars,
-          message: `Conversion was made from ${findName.funds} KWD to ${dollars} USD`,
-        });
+      return res.status(200).json({
+        ...findName,
+        funds: dollars,
+        message: `Conversion was made from ${findName.funds} KWD to ${dollars} USD`,
+      });
     }
     return res.status(200).json(findName);
   } else {
@@ -26,7 +24,7 @@ const getAccountByName = (req, res) => {
   }
 };
 
-const createAccount = (req, res) => {
+exports.createAccount = (req, res) => {
   const newId = accounts[accounts.length - 1].id + 1;
   const newAccount = { id: newId, ...req.body, funds: 0 };
   accounts.push(newAccount);
@@ -34,7 +32,7 @@ const createAccount = (req, res) => {
   return res.status(201).json(accounts);
 };
 
-const deleteAccount = (req, res) => {
+exports.deleteAccount = (req, res) => {
   const { accountId } = req.params;
   console.log(accounts);
   if (accounts.find((account) => account.id === +accountId)) {
@@ -46,7 +44,7 @@ const deleteAccount = (req, res) => {
   }
 };
 
-const updateAccount = (req, res) => {
+exports.updateAccount = (req, res) => {
   const { accountId } = req.params;
   const findAccount = accounts.find((account) => account.id === +accountId);
   if (!findAccount) {
@@ -59,12 +57,4 @@ const updateAccount = (req, res) => {
       findAccount[key] = req.body[key] ? req.body[key] : findAccount[key];
   }
   return res.status(201).json(findAccount);
-};
-
-module.exports = {
-  getAllAccounts,
-  getAccountByName,
-  createAccount,
-  deleteAccount,
-  updateAccount,
 };
