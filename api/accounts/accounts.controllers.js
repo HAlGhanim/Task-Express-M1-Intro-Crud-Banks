@@ -12,7 +12,13 @@ const getAccountByName = (req, res) => {
   if (findName) {
     if (currency?.toLowerCase() === "usd") {
       const dollars = findName.funds * 3.25569;
-      return res.status(200).json({ ...findName, funds: dollars });
+      return res
+        .status(200)
+        .json({
+          ...findName,
+          funds: dollars,
+          message: `Conversion was made from ${findName.funds} KWD to ${dollars} USD`,
+        });
     }
     return res.status(200).json(findName);
   } else {
