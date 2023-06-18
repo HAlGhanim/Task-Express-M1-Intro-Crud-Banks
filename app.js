@@ -1,11 +1,14 @@
 const express = require("express");
 const accountRoutes = require("./api/accounts/accounts.routes");
+const database = require("./database");
+const dotEnv = require("dotenv");
 const app = express();
-const PORT = 8000;
+dotEnv.config();
+database();
 
 app.use(express.json());
 app.use("/accounts", accountRoutes);
 
-app.listen(PORT, () => {
-  console.log(`The application is running on localhost: ${PORT}`);
+app.listen(process.env.PORT, () => {
+  console.log(`The application is running on localhost: ${process.env.PORT}`);
 });
