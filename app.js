@@ -3,6 +3,7 @@ const accountRoutes = require("./api/accounts/accounts.routes");
 const database = require("./database");
 const dotEnv = require("dotenv");
 const app = express();
+
 dotEnv.config();
 database();
 

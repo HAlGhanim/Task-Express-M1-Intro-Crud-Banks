@@ -2,15 +2,9 @@ const Account = require("../../db/models/Account");
 
 exports.getAllAccounts = async (req, res) => {
   try {
-    const { greater } = req.query;
-    const accounts = await Account.find().select("-createdAt -updatedAt");
-    console.log(greater);
-    if (!isNaN(greater)) {
-      const filteredFunds = accounts.filter(
-        (account) => account.funds > greater
-      );
-      return res.status(200).json(filteredFunds);
-    }
+    const accounts = await Account.find({ funds: { $gt: 2000 } }).select(
+      "-createdAt -updatedAt -__v"
+    );
     return res.status(200).json(accounts);
   } catch (error) {
     return res.status(500).json({ message: error.message });
